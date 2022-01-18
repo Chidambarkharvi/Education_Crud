@@ -5,7 +5,9 @@ import Button from "@mui/material/Button";
 function Table() {
   const [openModal, setOpenModal] = useState(false);
   const [addedData, setAddedData] = useState([]);
-
+  const [openModalForEdit, setOpenModalForEdit] = useState(false);
+  const [dataForEditModal, setDataForEditModal] = useState({});
+  const [editIndex, setEditIndex] = useState("");
   const deleteItem = (data, index) => {
     const datas =
       addedData &&
@@ -15,6 +17,7 @@ function Table() {
 
     setAddedData(datas);
   };
+
   return (
     <div>
       <nav
@@ -26,9 +29,11 @@ function Table() {
           padding: "0px 30px 0px 30px ",
         }}
       >
-        <h3 style={{color:"#3262a8"}}>ESS<span style={{color:"#a88732"}}>lite</span></h3>
+        <h3 style={{ color: "#3262a8" }}>
+          ESS<span style={{ color: "#a88732" }}>lite</span>
+        </h3>
         <h3>
-          <i style={{color:"#3262a8"}} class="fas fa-bars"></i>
+          <i style={{ color: "#3262a8" }} class="fas fa-bars"></i>
         </h3>
       </nav>
 
@@ -73,11 +78,11 @@ function Table() {
             ? addedData.map((data, index) => (
                 <>
                   <tr>
-                    <th>{data.education}</th>
-                    <th>{data.course}</th>
-                    <th>{data.university}</th>
-                    <th>{data.passingYear}</th>
-                    <th>
+                    <td>{data.education}</td>
+                    <td>{data.course}</td>
+                    <td>{data.university}</td>
+                    <td>{data.passingYear}</td>
+                    <td>
                       <Button
                         variant="outlined"
                         color="error"
@@ -87,7 +92,20 @@ function Table() {
                       >
                         Delete
                       </Button>
-                    </th>
+                    </td>
+                    <td>
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        onClick={() => {
+                          setDataForEditModal({ ...data });
+                          setOpenModalForEdit(true);
+                          setEditIndex(index);
+                        }}
+                      >
+                        edit
+                      </Button>
+                    </td>
                   </tr>
                 </>
               ))
@@ -102,13 +120,35 @@ function Table() {
                   color: "lightgray",
                 }}
               >
-                Add Educational Details 
+                Add Educational Details
               </p>
               <th></th>
             </tr>
           )}
         </table>
       </div>
+
+      {openModalForEdit && (
+        <AddModal
+          open={openModalForEdit}
+          handleClose={() => {
+            setOpenModalForEdit(false);
+          }}
+          onAddData={(data) => {
+            setOpenModalForEdit(false);
+            if (addedData.length > 0) {
+              addedData.map((arr, index) => {
+                if (index === editIndex) {
+                  addedData[editIndex] = data;
+                }
+              });
+            }
+          }}
+          buttonName="Edit"
+          dataForEditModal={dataForEditModal}
+          isEdit={true}
+        />
+      )}
 
       {openModal && (
         <AddModal
@@ -121,6 +161,7 @@ function Table() {
             setOpenModal(false);
             setAddedData([...addedData, data]);
           }}
+          isEdit={false}
         />
       )}
     </div>

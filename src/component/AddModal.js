@@ -1,16 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "@mui/material/Modal";
 import { Box } from "@mui/system";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
-function AddModal({ open, handleClose, onAddData }) {
+function AddModal({
+  open,
+  handleClose,
+  onAddData,
+  isEdit = false,
+  buttonName = "Add",
+  dataForEditModal,
+}) {
   const [details, setDetails] = useState({
     education: "",
     course: "",
     university: "",
     passingYear: "",
   });
+
+  useEffect(() => {
+    if (isEdit) {
+      setDetails({
+        ...dataForEditModal,
+      });
+    }
+  }, [dataForEditModal]);
+
   return (
     <Modal open={open} onClose={handleClose}>
       <Box
@@ -24,7 +40,9 @@ function AddModal({ open, handleClose, onAddData }) {
           bgcolor: "background.paper",
           boxShadow: 24,
           p: 4,
-          backgroundColor: "white",borderRadius:"10px", boxShadow: "0 3px 10px black"
+          backgroundColor: "white",
+          borderRadius: "10px",
+          boxShadow: "0 3px 10px black",
         }}
       >
         <div
@@ -93,6 +111,7 @@ function AddModal({ open, handleClose, onAddData }) {
             id="outlined-basic"
             label="Passing year"
             variant="outlined"
+            type="month"
             style={{
               minWidth: 300,
               maxWidth: 350,
@@ -123,7 +142,7 @@ function AddModal({ open, handleClose, onAddData }) {
               }
             }}
           >
-            Add
+            {buttonName}
           </Button>
         </div>
       </Box>
